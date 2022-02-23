@@ -10,7 +10,7 @@ import (
 func Delete(context *gin.Context) {
 	var status string
 	var msg string
-	todoId := context.PostForm("todoId")
+	todoId := context.Query("todoId")
 	if !todolist.Check(todoId) {
 		status = "failed"
 		msg = "待辦事項不存在"
