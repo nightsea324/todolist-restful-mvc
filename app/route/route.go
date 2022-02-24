@@ -13,6 +13,7 @@ func Route() {
 	router.DELETE("/todolist/", todolist.Delete)
 	router.PUT("/todolist/", todolist.Update)
 	router.GET("/todolist/", todolist.Read)
-	router.POST("/todolist/member", member.Register)
+	router.POST("/member/", member.Register)
+	router.POST("/member/login", member.Login)
 	router.Run(":80")
 }
