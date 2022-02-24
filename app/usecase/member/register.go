@@ -1,12 +1,14 @@
 package member
 
 import (
+	"log"
 	"net/http"
 	"time"
 	"todolist/app/model"
 	"todolist/app/mongo/member"
 
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -18,7 +20,7 @@ func Register(context *gin.Context) {
 		MemberId:       bson.NewObjectId().Hex(),
 		MemberName:     context.PostForm("memberName"),
 		MemberAccount:  context.PostForm("memberAccount"),
-		MemberPassword: context.PostForm("memberPassword"),
+		MemberPassword: hash(context.PostForm("memberPassword")),
 		CreatedAt:      time.Now(),
 	}
 	member.Insert(memberdata)
@@ -28,4 +30,13 @@ func Register(context *gin.Context) {
 		"status": status,
 		"msg":    msg,
 	})
+}
+
+// 加密
+func hash(password string) string {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(hash)
 }
