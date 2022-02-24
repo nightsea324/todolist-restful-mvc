@@ -12,12 +12,12 @@ import (
 func Login(context *gin.Context) {
 	var status string
 	var msg string
-	loginAccount := context.PostForm("loginAccount")
+	loginName := context.PostForm("loginName")
 	loginPassword := context.PostForm("loginPassword")
-	result, hasAccount := member.CheckAcount(loginAccount)
+	result, hasAccount := member.CheckName(loginName)
 	if !hasAccount {
 		status = "failed"
-		msg = "登入失敗，無此帳號"
+		msg = "登入失敗，無此名稱"
 	} else {
 		err := bcrypt.CompareHashAndPassword([]byte(result.MemberPassword), []byte(loginPassword))
 		if err != nil {
