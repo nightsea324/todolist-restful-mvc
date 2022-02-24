@@ -23,7 +23,7 @@ func Register(context *gin.Context) {
 	}
 	member.Insert(memberdata)
 	status = "ok"
-	msg = "新增成功"
+	msg = "註冊成功"
 	context.JSON(http.StatusOK, gin.H{
 		"status": status,
 		"msg":    msg,
