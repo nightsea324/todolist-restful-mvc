@@ -3,6 +3,7 @@ package member
 import (
 	"fmt"
 	"net/http"
+	"todolist/app/jwt"
 	"todolist/app/mongo/member"
 
 	"github.com/gin-gonic/gin"
@@ -25,6 +26,14 @@ func Login(context *gin.Context) {
 			msg = "登入失敗，密碼錯誤"
 			fmt.Println(err)
 		} else {
+			// create jwt token
+			jwtToken, err := jwt.GenerateToken(result.MemberId, result.MemberName)
+			if err != nil {
+				context.Redirect(http.StatusFound, "/")
+				return
+			}
+			context.SetCookie(jwt.Key, jwtToken, jwt.JWT_TOKEN_LIFE, "/", "localhost", false, true)
+
 			status = "ok"
 			msg = "登入成功"
 		}

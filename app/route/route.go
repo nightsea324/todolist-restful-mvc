@@ -1,6 +1,7 @@
 package route
 
 import (
+	"todolist/app/middleware"
 	"todolist/app/usecase/member"
 	"todolist/app/usecase/todolist"
 
@@ -9,10 +10,10 @@ import (
 
 func Route() {
 	router := gin.Default()
-	router.POST("/todolist/", todolist.Create)
-	router.DELETE("/todolist/", todolist.Delete)
-	router.PUT("/todolist/", todolist.Update)
-	router.GET("/todolist/", todolist.Read)
+	router.POST("/todolist/", middleware.Auth(), todolist.Create)
+	router.DELETE("/todolist/", middleware.Auth(), todolist.Delete)
+	router.PUT("/todolist/", middleware.Auth(), todolist.Update)
+	router.GET("/todolist/", middleware.Auth(), todolist.Read)
 	router.POST("/member/", member.Register)
 	router.POST("/member/login", member.Login)
 	router.Run(":80")

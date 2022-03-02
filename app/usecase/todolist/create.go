@@ -18,7 +18,7 @@ func Create(context *gin.Context) {
 		TodoId:     bson.NewObjectId().Hex(),
 		TodoName:   context.PostForm("todoName"),
 		TodoStatus: false,
-		MemberName: "nightsea",
+		MemberName: context.GetString("memberName"),
 		CreatedAt:  time.Now(),
 	}
 	todolist.Insert(todoList)
