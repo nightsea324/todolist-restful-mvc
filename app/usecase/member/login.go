@@ -2,9 +2,11 @@ package member
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"todolist/app/jwt"
 	"todolist/app/mongo/member"
+	"todolist/redis"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -31,6 +33,10 @@ func Login(context *gin.Context) {
 			if err != nil {
 				context.Redirect(http.StatusFound, "/")
 				return
+			}
+			// create redis
+			if err := redis.Set(context, loginName, jwtToken); err != nil {
+				log.Fatal(err)
 			}
 			context.SetCookie(jwt.Key, jwtToken, jwt.JWT_TOKEN_LIFE, "/", "localhost", false, true)
 
