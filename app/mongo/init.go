@@ -11,14 +11,18 @@ import (
 
 var Client *mongo.Client
 
+// Init - 初始化mongo
 func Init() {
-	clientOptions := options.Client().ApplyURI("mongodb://mongo1:27017,mongo2:27027,mongo3:27037/?replicaSet=rs0")
+
 	var ctx = context.TODO()
+
 	// 連線至MongoDB
+	clientOptions := options.Client().ApplyURI("mongodb://mongo1:27017,mongo2:27027,mongo3:27037/?replicaSet=rs0")
 	mclient, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	// 確認連線
 	err = mclient.Ping(ctx, nil)
 	if err != nil {

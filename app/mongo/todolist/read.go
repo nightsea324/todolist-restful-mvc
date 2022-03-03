@@ -10,12 +10,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// GetByName - 透過名稱查詢
 func GetByName(Name string) ([]*model.Todolist, error) {
+
 	var ctx = context.TODO()
+
 	// 連線至collection
 	collection := mongo.Client.Database("todoList").Collection("todoList")
-	findOption := options.Find()
 
+	// 查詢資料庫
+	findOption := options.Find()
 	var results []*model.Todolist
 	filter := bson.D{{Key: "memberName", Value: Name}}
 	cur, err := collection.Find(ctx, filter, findOption)
@@ -41,6 +45,7 @@ func GetByName(Name string) ([]*model.Todolist, error) {
 	return results, nil
 }
 
+// GetById - 透過ID查詢
 func GetById(id string) (*model.Todolist, error) {
 	var ctx = context.TODO()
 	// 連線至collection

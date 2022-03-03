@@ -9,10 +9,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// Update - 完成待辦事項
 func Update(todoId string) {
+
 	var ctx = context.TODO()
+
 	// 連線至collection
 	collection := mongo.Client.Database("todoList").Collection("todoList")
+
+	// 更新資料庫資料
 	filter := bson.D{{Key: "todoId", Value: todoId}}
 	opts := options.Update().SetUpsert(true)
 	update := bson.D{

@@ -8,18 +8,27 @@ import (
 )
 
 const (
-	JWT_SECRET     = "112d8904aswd9adqwd19asdas1d9qw0d74asd1a"
+	// jwt私鑰
+	JWT_SECRET = "112d8904aswd9adqwd19asdas1d9qw0d74asd1a"
+
+	// jwt存活時間
 	JWT_TOKEN_LIFE = 2592000
-	Key            = "token"
+
+	// token
+	Key = "token"
 )
 
+// Claims - jwt內容格式
 type Claims struct {
 	MemberId   string
 	MemberName string
 	jwt.StandardClaims
 }
 
+// GenerateToken - 產生token
 func GenerateToken(memberId, memberName string) (string, error) {
+
+	// 產生token
 	nowTime := time.Now()
 	expireTime := nowTime.Add(time.Duration(JWT_TOKEN_LIFE) * time.Second)
 	claims := &Claims{
@@ -35,7 +44,10 @@ func GenerateToken(memberId, memberName string) (string, error) {
 	return token, err
 }
 
+// ParseToken - 解析token
 func ParseToken(token string) (memberId, memberName string, err error) {
+
+	// 解析token
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(JWT_SECRET), nil
 	})
