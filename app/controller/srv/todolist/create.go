@@ -16,25 +16,35 @@ func Create(context *gin.Context) {
 	var status string
 	var msg string
 
-	// 寫入資料庫
+	defer func() {
+		context.JSON(http.StatusOK, gin.H{
+			"status":  status,
+			"message": msg,
+		})
+	}()
+
+	// 取得資料
+	name := context.PostForm("name")
+	memberId := context.GetString("memberId")
+
+	// 寫入model
 	todoList := model.Todolist{
 		ID:        bson.NewObjectId().Hex(),
-		Name:      context.PostForm("name"),
+		Name:      name,
 		Status:    false,
-		MemberId:  context.GetString("memberId"),
+		MemberId:  memberId,
 		CreatedAt: time.Now(),
 	}
 
+	// 寫入資料庫
 	if err := todolist.Create(todoList); err != nil {
 		status = "failed"
 		msg = "新增失敗，資料庫錯誤"
-	} else {
-		status = "ok"
-		msg = "已成功新增" + context.PostForm("name") + "待辦事項"
+		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"status": status,
-		"msg":    msg,
-	})
+	status = "ok"
+	msg = "已成功新增" + context.PostForm("name") + "待辦事項"
+
+	return
 }

@@ -1,7 +1,6 @@
 package member
 
 import (
-	"log"
 	"net/http"
 	"time"
 	"todolist/app/model/model"
@@ -18,42 +17,62 @@ func Register(context *gin.Context) {
 	var status string
 	var msg string
 
-	data := model.Member{
-		ID:        bson.NewObjectId().Hex(),
-		Name:      context.PostForm("name"),
-		Password:  hash(context.PostForm("password")),
-		CreatedAt: time.Now(),
-	}
+	defer func() {
+		context.JSON(http.StatusOK, gin.H{
+			"status":  status,
+			"message": msg,
+		})
+	}()
+
+	// 取得註冊資料
+	name := context.PostForm("name")
+	password := context.PostForm("password")
 
 	// 確認名稱是否重複
-	_, err := member.GetByName(data.Name)
+	_, err := member.GetByName(name)
 	if err == nil {
 		status = "failed"
 		msg = "註冊失敗，名稱重複"
-	} else {
-		// 寫入資料庫
-		if err := member.Create(data); err != nil {
-			status = "failed"
-			msg = "註冊失敗，資料庫錯誤"
-		}
-		status = "ok"
-		msg = "註冊成功"
-
+		return
 	}
 
-	context.JSON(http.StatusOK, gin.H{
-		"status": status,
-		"msg":    msg,
-	})
+	// 密碼加密
+	hashPassword, err := hash(password)
+	if err != nil {
+		status = "failed"
+		msg = "註冊失敗，加密密碼錯誤"
+		return
+	}
+
+	// 寫入model
+	data := model.Member{
+		ID:        bson.NewObjectId().Hex(),
+		Name:      name,
+		Password:  hashPassword,
+		CreatedAt: time.Now(),
+	}
+
+	// 寫入資料庫
+	if err := member.Create(data); err != nil {
+		status = "failed"
+		msg = "註冊失敗，資料庫錯誤"
+		return
+	}
+
+	status = "ok"
+	msg = "註冊成功"
+
+	return
 }
 
 // hash -  加密
-func hash(password string) string {
+func hash(password string) (string, error) {
 
 	// 加密
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
-	return string(hash)
+
+	return string(hash), nil
 }

@@ -24,7 +24,7 @@ func Router() {
 		t.PUT("/:id", middleware.Auth(), todolist.Update)
 
 		// 取得待辦事項
-		t.GET("/", middleware.Auth(), todolist.Read)
+		t.GET("/", middleware.Auth(), todolist.Get)
 	}
 	// 會員
 	m := router.Group("api/member")
