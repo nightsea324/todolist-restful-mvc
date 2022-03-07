@@ -2,7 +2,7 @@ package todolist
 
 import (
 	"net/http"
-	"todolist/app/mongo/todolist"
+	"todolist/app/model/mongo/todolist"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,20 +14,20 @@ func Update(context *gin.Context) {
 	var msg string
 
 	// 確認資料
-	todoId := context.Param("id")
-	todoList, err := todolist.GetById(todoId)
+	id := context.Param("id")
+	todoList, err := todolist.GetById(id)
 
 	if err != nil {
 		status = "failed"
 		msg = "待辦事項不存在"
 	} else {
 		// 確認使用者
-		if context.GetString("memberName") != todoList.MemberName {
+		if context.GetString("memberId") != todoList.MemberId {
 			status = "failed"
 			msg = "使用者錯誤"
 		} else {
 			// 更新資料庫資料
-			todolist.Update(todoId)
+			todolist.Update(id)
 			status = "ok"
 			msg = "已成功完成待辦事項"
 		}

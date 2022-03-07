@@ -3,12 +3,12 @@ package todolist
 import (
 	"context"
 	"log"
-	"todolist/app/model"
-	"todolist/app/mongo"
+	"todolist/app/model/model"
+	"todolist/app/model/mongo"
 )
 
-// Insert - 新增待辦事項
-func Insert(todoList model.Todolist) {
+// Create - 新增待辦事項
+func Create(todoList model.Todolist) {
 
 	var ctx = context.TODO()
 

@@ -3,8 +3,8 @@ package todolist
 import (
 	"net/http"
 	"time"
-	"todolist/app/model"
-	"todolist/app/mongo/todolist"
+	"todolist/app/model/model"
+	"todolist/app/model/mongo/todolist"
 
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2/bson"
@@ -18,13 +18,15 @@ func Create(context *gin.Context) {
 
 	// 寫入資料庫
 	todoList := model.Todolist{
-		TodoId:     bson.NewObjectId().Hex(),
-		TodoName:   context.PostForm("todoName"),
-		TodoStatus: false,
-		MemberName: context.GetString("memberName"),
-		CreatedAt:  time.Now(),
+		ID:        bson.NewObjectId().Hex(),
+		Name:      context.PostForm("name"),
+		Status:    false,
+		MemberId:  context.GetString("memberId"),
+		CreatedAt: time.Now(),
 	}
-	todolist.Insert(todoList)
+
+	todolist.Create(todoList)
+
 	status = "ok"
 	msg = "新增成功"
 

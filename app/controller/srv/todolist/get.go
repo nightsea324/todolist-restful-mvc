@@ -2,7 +2,7 @@ package todolist
 
 import (
 	"net/http"
-	"todolist/app/mongo/todolist"
+	"todolist/app/model/mongo/todolist"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,8 +14,9 @@ func Read(context *gin.Context) {
 	var msg string
 
 	// 透過使用者查詢
-	memberName := context.GetString("memberName")
-	results, err := todolist.GetByName(memberName)
+	id := context.GetString("memberId")
+	results, err := todolist.GetByMemberId(id)
+
 	if err != nil {
 		status = "failed"
 		msg = "使用者無待辦事項"

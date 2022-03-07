@@ -2,7 +2,7 @@ package todolist
 
 import (
 	"net/http"
-	"todolist/app/mongo/todolist"
+	"todolist/app/model/mongo/todolist"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,20 +14,20 @@ func Delete(context *gin.Context) {
 	var msg string
 
 	// 確認資料
-	todoId := context.Param("id")
-	todoList, err := todolist.GetById(todoId)
+	id := context.Param("id")
+	todoList, err := todolist.GetById(id)
 
 	if err != nil {
 		status = "failed"
 		msg = "待辦事項不存在"
 	} else {
 		// 確認使用者
-		if context.GetString("memberName") != todoList.MemberName {
+		if context.GetString("memberId") != todoList.MemberId {
 			status = "failed"
 			msg = "使用者錯誤"
 		} else {
 			// 刪除資料庫資料
-			todolist.Delete(todoId)
+			todolist.Delete(id)
 			status = "ok"
 			msg = "已成功刪除待辦事項"
 		}

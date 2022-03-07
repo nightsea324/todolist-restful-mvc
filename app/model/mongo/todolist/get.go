@@ -3,15 +3,14 @@ package todolist
 import (
 	"context"
 	"log"
-	"todolist/app/model"
-	"todolist/app/mongo"
+	"todolist/app/model/model"
+	"todolist/app/model/mongo"
 
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// GetByName - 透過名稱查詢
-func GetByName(Name string) ([]*model.Todolist, error) {
+// GetByMemberId - 透過會員ID查詢
+func GetByMemberId(id string) ([]*model.Todolist, error) {
 
 	var ctx = context.TODO()
 
@@ -19,10 +18,10 @@ func GetByName(Name string) ([]*model.Todolist, error) {
 	collection := mongo.Client.Database("todoList").Collection("todoList")
 
 	// 查詢資料庫
-	findOption := options.Find()
 	var results []*model.Todolist
-	filter := bson.D{{Key: "memberName", Value: Name}}
-	cur, err := collection.Find(ctx, filter, findOption)
+	filter := bson.D{{Key: "memberId", Value: id}}
+	cur, err := collection.Find(ctx, filter)
+
 	if err != nil {
 		return nil, err
 	}
@@ -47,13 +46,16 @@ func GetByName(Name string) ([]*model.Todolist, error) {
 
 // GetById - 透過ID查詢
 func GetById(id string) (*model.Todolist, error) {
+
 	var ctx = context.TODO()
+
 	// 連線至collection
 	collection := mongo.Client.Database("todoList").Collection("todoList")
 
-	result := new(model.Todolist)
+	// 查詢資料庫
+	var result *model.Todolist
 
-	filter := bson.D{{Key: "todoId", Value: id}}
+	filter := bson.D{{Key: "id", Value: id}}
 	err := collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		return nil, err

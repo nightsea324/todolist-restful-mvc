@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 	"time"
-	"todolist/app/model"
-	"todolist/app/mongo/member"
+	"todolist/app/model/model"
+	"todolist/app/model/mongo/member"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -18,21 +18,21 @@ func Register(context *gin.Context) {
 	var status string
 	var msg string
 
-	memberdata := model.Member{
-		MemberId:       bson.NewObjectId().Hex(),
-		MemberName:     context.PostForm("memberName"),
-		MemberPassword: hash(context.PostForm("memberPassword")),
-		CreatedAt:      time.Now(),
+	data := model.Member{
+		ID:        bson.NewObjectId().Hex(),
+		Name:      context.PostForm("name"),
+		Password:  hash(context.PostForm("password")),
+		CreatedAt: time.Now(),
 	}
 
 	// 確認名稱是否重複
-	_, err := member.GetByName(memberdata.MemberName)
+	_, err := member.GetByName(data.Name)
 	if err == nil {
 		status = "failed"
 		msg = "註冊失敗，名稱重複"
 	} else {
 		// 寫入資料庫
-		member.Insert(memberdata)
+		member.Create(data)
 		status = "ok"
 		msg = "註冊成功"
 

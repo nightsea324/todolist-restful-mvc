@@ -2,8 +2,8 @@ package member
 
 import (
 	"context"
-	"todolist/app/model"
-	"todolist/app/mongo"
+	"todolist/app/model/model"
+	"todolist/app/model/mongo"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
@@ -18,7 +18,7 @@ func GetByName(name string) (model.Member, error) {
 
 	// 查詢資料庫
 	var result model.Member
-	filter := bson.D{{Key: "memberName", Value: name}}
+	filter := bson.D{{Key: "name", Value: name}}
 	err := collection.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
 		return result, err

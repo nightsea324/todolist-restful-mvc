@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"todolist/app/mongo/member"
+	"todolist/app/model/mongo/member"
+	"todolist/app/model/redis"
 	"todolist/jwt"
-	"todolist/redis"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -18,29 +18,32 @@ func Login(context *gin.Context) {
 	var msg string
 
 	// 取得登入資訊
-	loginName := context.PostForm("loginName")
-	loginPassword := context.PostForm("loginPassword")
+	name := context.PostForm("name")
+	password := context.PostForm("password")
 
 	// 確認會員資訊是否存在
-	result, err := member.GetByName(loginName)
+	result, err := member.GetByName(name)
+
 	if err != nil {
 		status = "failed"
 		msg = "登入失敗，無此名稱"
 	} else {
-		err := bcrypt.CompareHashAndPassword([]byte(result.MemberPassword), []byte(loginPassword))
+		// 加密密碼比對
+		err := bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(password))
 		if err != nil {
 			status = "failed"
 			msg = "登入失敗，密碼錯誤"
 			fmt.Println(err)
 		} else {
 			// 建立jwt
-			jwtToken, err := jwt.GenerateToken(result.MemberId, result.MemberName)
+			jwtToken, err := jwt.GenerateToken(result.ID, result.Name)
 			if err != nil {
 				context.Redirect(http.StatusFound, "/")
 				return
 			}
+
 			// 寫入redis
-			if err := redis.Set(context, loginName, jwtToken); err != nil {
+			if err := redis.Set(context, name, jwtToken); err != nil {
 				log.Fatal(err)
 			}
 			context.SetCookie(jwt.Key, jwtToken, jwt.JWT_TOKEN_LIFE, "/", "localhost", false, true)

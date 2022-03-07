@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"net/http"
+	"todolist/app/model/redis"
 	"todolist/jwt"
-	"todolist/redis"
 
 	"github.com/gin-gonic/gin"
 )
