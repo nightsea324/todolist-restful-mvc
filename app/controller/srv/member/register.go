@@ -32,7 +32,10 @@ func Register(context *gin.Context) {
 		msg = "註冊失敗，名稱重複"
 	} else {
 		// 寫入資料庫
-		member.Create(data)
+		if err := member.Create(data); err != nil {
+			status = "failed"
+			msg = "註冊失敗，資料庫錯誤"
+		}
 		status = "ok"
 		msg = "註冊成功"
 

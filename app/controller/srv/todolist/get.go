@@ -19,7 +19,7 @@ func Read(context *gin.Context) {
 
 	if err != nil {
 		status = "failed"
-		msg = "使用者無待辦事項"
+		msg = "查詢失敗，使用者無待辦事項"
 	} else {
 		status = "ok"
 		msg = "已查詢使用者待辦事項"

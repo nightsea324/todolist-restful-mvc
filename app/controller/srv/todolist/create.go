@@ -25,10 +25,13 @@ func Create(context *gin.Context) {
 		CreatedAt: time.Now(),
 	}
 
-	todolist.Create(todoList)
-
-	status = "ok"
-	msg = "新增成功"
+	if err := todolist.Create(todoList); err != nil {
+		status = "failed"
+		msg = "新增失敗，資料庫錯誤"
+	} else {
+		status = "ok"
+		msg = "已成功新增" + context.PostForm("name") + "待辦事項"
+	}
 
 	context.JSON(http.StatusOK, gin.H{
 		"status": status,

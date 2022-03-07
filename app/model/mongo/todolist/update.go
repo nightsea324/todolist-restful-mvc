@@ -2,7 +2,6 @@ package todolist
 
 import (
 	"context"
-	"log"
 	"todolist/app/model/mongo"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -10,7 +9,7 @@ import (
 )
 
 // Update - 完成待辦事項
-func Update(id string) {
+func Update(id string) error {
 
 	var ctx = context.TODO()
 
@@ -26,6 +25,8 @@ func Update(id string) {
 		}}
 	_, err := collection.UpdateOne(ctx, filter, update, opts)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }

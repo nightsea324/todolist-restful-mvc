@@ -19,15 +19,18 @@ func Update(context *gin.Context) {
 
 	if err != nil {
 		status = "failed"
-		msg = "待辦事項不存在"
+		msg = "更新失敗，待辦事項不存在"
 	} else {
 		// 確認使用者
 		if context.GetString("memberId") != todoList.MemberId {
 			status = "failed"
-			msg = "使用者錯誤"
+			msg = "更新失敗，使用者錯誤"
 		} else {
 			// 更新資料庫資料
-			todolist.Update(id)
+			if err := todolist.Update(id); err != nil {
+				status = "failed"
+				msg = "更新失敗，資料庫錯誤"
+			}
 			status = "ok"
 			msg = "已成功完成待辦事項"
 		}

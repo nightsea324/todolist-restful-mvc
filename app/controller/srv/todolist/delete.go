@@ -19,17 +19,21 @@ func Delete(context *gin.Context) {
 
 	if err != nil {
 		status = "failed"
-		msg = "待辦事項不存在"
+		msg = "刪除失敗，待辦事項不存在"
 	} else {
 		// 確認使用者
 		if context.GetString("memberId") != todoList.MemberId {
 			status = "failed"
-			msg = "使用者錯誤"
+			msg = "刪除失敗，使用者錯誤"
 		} else {
 			// 刪除資料庫資料
-			todolist.Delete(id)
-			status = "ok"
-			msg = "已成功刪除待辦事項"
+			if err := todolist.Delete(id); err != nil {
+				status = "failed"
+				msg = "刪除失敗，資料庫錯誤"
+			} else {
+				status = "ok"
+				msg = "已成功刪除待辦事項"
+			}
 		}
 	}
 

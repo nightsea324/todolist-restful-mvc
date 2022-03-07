@@ -2,14 +2,13 @@ package todolist
 
 import (
 	"context"
-	"log"
 	"todolist/app/model/mongo"
 
 	"go.mongodb.org/mongo-driver/bson"
 )
 
 // Delete - 刪除待辦事項
-func Delete(id string) {
+func Delete(id string) error {
 
 	var ctx = context.TODO()
 
@@ -20,6 +19,8 @@ func Delete(id string) {
 	filter := bson.D{{Key: "id", Value: id}}
 	_, err := collection.DeleteOne(ctx, filter)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }
