@@ -2,8 +2,10 @@ package todolist
 
 import (
 	"net/http"
+	"todolist/app/model/model"
 	"todolist/app/model/mongo/todolist"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 )
 
@@ -21,11 +23,13 @@ func Update(context *gin.Context) {
 	}()
 
 	// 取得資料
-	id := context.Param("id")
+	req := new(model.Todolist)
+	context.BindJSON(&req)
+	req.ID = context.Param("id")
 	memberId := context.GetString("memberId")
 
 	// 確認資料是否存在
-	todoList, err := todolist.GetById(id)
+	todoList, err := todolist.GetById(req.ID)
 
 	if err != nil {
 		status = "failed"
@@ -34,6 +38,7 @@ func Update(context *gin.Context) {
 	}
 
 	// 確認使用者是否正確
+	spew.Dump(memberId, todoList.MemberId)
 	if memberId != todoList.MemberId {
 		status = "failed"
 		msg = "更新失敗，使用者錯誤"
@@ -41,7 +46,7 @@ func Update(context *gin.Context) {
 	}
 
 	// 更新資料庫資料
-	if err := todolist.Update(id); err != nil {
+	if err := todolist.Update(req.ID); err != nil {
 		status = "failed"
 		msg = "更新失敗，資料庫錯誤"
 		return

@@ -25,11 +25,11 @@ func Register(context *gin.Context) {
 	}()
 
 	// 取得註冊資料
-	name := context.PostForm("name")
-	password := context.PostForm("password")
+	req := new(model.Member)
+	context.BindJSON(&req)
 
 	// 確認名稱是否重複
-	_, err := member.GetByName(name)
+	_, err := member.GetByName(req.Name)
 	if err == nil {
 		status = "failed"
 		msg = "註冊失敗，名稱重複"
@@ -37,7 +37,7 @@ func Register(context *gin.Context) {
 	}
 
 	// 密碼加密
-	hashPassword, err := hash(password)
+	hashPassword, err := hash(req.Password)
 	if err != nil {
 		status = "failed"
 		msg = "註冊失敗，加密密碼錯誤"
@@ -47,7 +47,7 @@ func Register(context *gin.Context) {
 	// 寫入model
 	data := model.Member{
 		ID:        bson.NewObjectId().Hex(),
-		Name:      name,
+		Name:      req.Name,
 		Password:  hashPassword,
 		CreatedAt: time.Now(),
 	}

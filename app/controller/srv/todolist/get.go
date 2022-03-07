@@ -24,6 +24,8 @@ func Get(context *gin.Context) {
 	}()
 
 	// 取得使用者資料
+	req := new(model.Todolist)
+	context.BindJSON(&req)
 	memberId := context.GetString("memberId")
 
 	// 透過使用者ID取得資料

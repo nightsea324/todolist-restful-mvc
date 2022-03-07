@@ -24,13 +24,14 @@ func Create(context *gin.Context) {
 	}()
 
 	// 取得資料
-	name := context.PostForm("name")
+	req := new(model.Todolist)
+	context.BindJSON(&req)
 	memberId := context.GetString("memberId")
 
 	// 寫入model
 	todoList := model.Todolist{
 		ID:        bson.NewObjectId().Hex(),
-		Name:      name,
+		Name:      req.Name,
 		Status:    false,
 		MemberId:  memberId,
 		CreatedAt: time.Now(),
@@ -44,7 +45,7 @@ func Create(context *gin.Context) {
 	}
 
 	status = "ok"
-	msg = "已成功新增" + context.PostForm("name") + "待辦事項"
+	msg = "已成功新增" + req.Name + "待辦事項"
 
 	return
 }

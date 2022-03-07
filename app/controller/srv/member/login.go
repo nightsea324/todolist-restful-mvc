@@ -2,6 +2,7 @@ package member
 
 import (
 	"net/http"
+	"todolist/app/model/model"
 	"todolist/app/model/mongo/member"
 	"todolist/app/model/redis"
 	"todolist/jwt"
@@ -24,11 +25,11 @@ func Login(context *gin.Context) {
 	}()
 
 	// 取得登入資訊
-	name := context.PostForm("name")
-	password := context.PostForm("password")
+	req := new(model.Member)
+	context.BindJSON(&req)
 
 	// 驗證會員
-	result, err := member.GetByName(name)
+	result, err := member.GetByName(req.Name)
 	if err != nil {
 		status = "failed"
 		msg = "登入失敗，無此名稱"
@@ -36,7 +37,7 @@ func Login(context *gin.Context) {
 	}
 
 	// 加密密碼比對
-	if err := bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(password)); err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(req.Password)); err != nil {
 		status = "failed"
 		msg = "登入失敗，密碼錯誤"
 		return
@@ -52,7 +53,7 @@ func Login(context *gin.Context) {
 	}
 
 	// 寫入redis
-	if err := redis.Set(context, name, jwtToken); err != nil {
+	if err := redis.Set(context, req.Name, jwtToken); err != nil {
 		status = "failed"
 		msg = "登入失敗，redis寫入失敗"
 		return
