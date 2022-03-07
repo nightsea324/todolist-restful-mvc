@@ -2,13 +2,12 @@ package member
 
 import (
 	"context"
-	"log"
-	"todolist/app/model"
-	"todolist/app/mongo"
+	"todolist/app/model/model"
+	"todolist/app/model/mongo"
 )
 
-// Insert - 註冊會員
-func Insert(member model.Member) {
+// Create - 註冊會員
+func Create(member model.Member) error {
 
 	var ctx = context.TODO()
 
@@ -18,6 +17,7 @@ func Insert(member model.Member) {
 	// 寫入資料庫
 	_, err := collection.InsertOne(ctx, member)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }

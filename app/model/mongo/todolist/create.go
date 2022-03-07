@@ -2,13 +2,12 @@ package todolist
 
 import (
 	"context"
-	"log"
-	"todolist/app/model"
-	"todolist/app/mongo"
+	"todolist/app/model/model"
+	"todolist/app/model/mongo"
 )
 
-// Insert - 新增待辦事項
-func Insert(todoList model.Todolist) {
+// Create - 新增待辦事項
+func Create(todoList model.Todolist) error {
 
 	var ctx = context.TODO()
 
@@ -18,6 +17,8 @@ func Insert(todoList model.Todolist) {
 	// 寫入資料庫
 	_, err := collection.InsertOne(ctx, todoList)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }

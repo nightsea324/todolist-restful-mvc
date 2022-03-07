@@ -1,14 +1,14 @@
 package main
 
 import (
-	"todolist/app/controller/route"
-	"todolist/app/mongo"
-	"todolist/redis"
+	"todolist/app/controller/router"
+	"todolist/app/model/mongo"
+	"todolist/app/model/redis"
 )
 
 // main -
 func main() {
 	mongo.Init()
 	redis.NewClient()
-	route.Route()
+	router.Router()
 }
