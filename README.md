@@ -9,7 +9,7 @@
 ## 3. 開發技術
 |項目|
 |---------|
-|Golang.  |
+|Golang   |
 |MongoDB  |
 ## 4. 使用方式
   $ go run main.go
